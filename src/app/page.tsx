@@ -14,32 +14,7 @@ export type ITemplate = {
 	// resumeAttachedFlag: "resumelink" | "attached" | "none";
 };
 
-export const templates: ITemplate[] = [
-	{
-		title: "Std LinkedIN",
-		templateText: `
-    Hi $.userName,
 
-    It's great connecting with you. How have you been?
-    
-    I found a job opportunity at $.companyName which perfectly overlaps with my skillset and wanted to check if you could provide me with a refferal for the same.
-    
-    Here is the job link:
-    $.jobLink
-    
-    Here is a link to my resume: 
-    #.resumeLink
-
-    Looking forward to hearing back from you, thank you for your time and consideration.
-    
-
-    Best Regards,
-    Tanush
-    `,
-		variables: ["userName", "jobLink", "companyName"],
-		// resumeAttachedFlag
-	},
-];
 
 export type ITextPart = {
 	style: "normal" | "highlighted";
@@ -113,6 +88,32 @@ const TemplateList = (props: {
 };
 
 export default function Home() {
+  const templates: ITemplate[] = [
+    {
+      title: "Std LinkedIN",
+      templateText: `
+      Hi $.userName,
+  
+      It's great connecting with you. How have you been?
+      
+      I found a job opportunity at $.companyName which perfectly overlaps with my skillset and wanted to check if you could provide me with a refferal for the same.
+      
+      Here is the job link:
+      $.jobLink
+      
+      Here is a link to my resume: 
+      #.resumeLink
+  
+      Looking forward to hearing back from you, thank you for your time and consideration.
+      
+  
+      Best Regards,
+      Tanush
+      `,
+      variables: ["userName", "jobLink", "companyName"],
+      // resumeAttachedFlag
+    },
+  ];
 	const resumeLinkFromStorage = localStorage.getItem("resumeLink");
 	const [resumeInput, setResumeInput] = useState<string>("");
 	const [resumeLink, setResumeLink] = useState<string>(
