@@ -1,3 +1,4 @@
+"use client";
 type IResumeSaveSectionProps = {
 	resumeLink: string;
 	setResumeLink: (resumeLink: string) => void;

@@ -1,3 +1,4 @@
+"use client";
 import { ITemplate } from "@/app/page";
 import { GeistMono } from "geist/font";
 import { useState, useRef, useEffect } from "react";
