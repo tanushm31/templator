@@ -1,113 +1,250 @@
+"use client";
+
 import Image from "next/image";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+import { useEffect, useRef, useState } from "react";
+
+type ITemplate = {
+	title: string;
+	templateText: string;
+	variables: string[];
+	// resumeAttachedFlag: "resumelink" | "attached" | "none";
+};
+
+const resumeAttachmentText = `
+Here is a link to my resume: $.resumeLink
+`;
+const templates: ITemplate[] = [
+	{
+		title: "Std LinkedIN",
+		templateText: `
+    Hi $.userName,
+
+    It's great connecting with you. How have you been?
+    
+    I found a job opportunity at $.companyName which perfectly overlaps with my skillset and wanted to check if you could provide me with a refferal for the same.
+    
+    Here is the job link:
+    $.jobLink
+    
+    Here is a link to my resume: 
+    #.resumeLink
+
+    Looking forward to hearing back from you, thank you for your time and consideration.
+    
+
+    Best Regards,
+    Tanush
+    `,
+		variables: ["userName", "jobLink", "companyName"],
+		// resumeAttachedFlag
+	},
+];
+
+type ITextPart = {
+	style: "normal" | "highlighted";
+	text: string;
+};
+
+export const GenerateTemplate: React.FC<ITemplate> = (props: ITemplate) => {
+	const { title, templateText, variables } = props;
+	const initializeVariableDictionary = (variables: string[]) => {
+		const dict = new Map<string, string>();
+		variables.forEach((variable) => {
+			dict.set(variable, "");
+		});
+		return dict;
+	};
+
+	const [variableDict, setVariableDict] = useState<Map<string, string>>(
+		initializeVariableDictionary(variables)
+	);
+
+	const highlightedTextRef = useRef<HTMLDivElement>(null);
+
+	const replaceVariablesInTemplateTextAndDisplayTextinDiv = (
+		templateText: string,
+		variableDict: Map<string, string>,
+		highlightedTextRef: HTMLDivElement
+	) => {
+		let finalText = templateText;
+		console.log("Variable Values in Highlight Function", variableDict);
+		variables.forEach((currWord) => {
+			if (variableDict.has(currWord) && variableDict.get(currWord) !== "") {
+				finalText = finalText.replace(
+					`$.${currWord}`,
+					`<em style="background-color:#064e3b !important;">${variableDict.get(
+						currWord
+					)}</em>`
+				);
+			} else {
+				finalText = finalText.replace(
+					`$.${currWord}`,
+					`<em style="color:#dc2626 !important;">{${currWord}}</em>`
+				);
+			}
+		});
+
+		console.log({ finalText: finalText });
+		highlightedTextRef.innerHTML = finalText;
+	};
+	const checkIfAllVariablesAreFilled = () => {
+		let allVariablesFilled = true;
+		variableDict.forEach((value) => {
+			if (value === "") {
+				allVariablesFilled = false;
+			}
+		});
+		return allVariablesFilled;
+	};
+
+	useEffect(() => {
+		console.log("variableDict", variableDict);
+		if (highlightedTextRef.current && variableDict.size > 0) {
+			replaceVariablesInTemplateTextAndDisplayTextinDiv(
+				templateText,
+				variableDict,
+				highlightedTextRef.current
+			);
+		}
+	}, [variableDict]);
+	return (
+		<div className="flex w-full flex-col justify-start bg-gray-900 rounded p-2">
+			<div className="w-full">Variables</div>
+			<div className="w-full grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 text-xs bg-indigo-950/60 rounded p-2">
+				{variables.map((variable) => {
+					return (
+						<div className="mt-1 flex flex-col" key={variable}>
+							<div>{variable}</div>
+							<input
+								className="text-black px-3 py-2 mt-1 rounded"
+								onChange={(e) => {
+									setVariableDict((prevDict) => {
+										const newDict = new Map(prevDict);
+										newDict.set(variable, e.target.value.trim());
+										return newDict;
+									});
+								}}
+								type="text"
+							/>
+						</div>
+					);
+				})}
+			</div>
+			<div className="mt-3 flex justify-between items-center text-white py-2">
+				<span>Generated Text</span>{" "}
+				<button
+					className={`flex justify-between items-center text-xs p-2 rounded ${
+						!checkIfAllVariablesAreFilled() ? "bg-red-600" : "bg-green-700"
+					}`}
+					onClick={() => {}}
+				>
+					Copy{" "}
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						strokeWidth={1.5}
+						stroke="currentColor"
+						className="size-4"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
+						/>
+					</svg>
+				</button>
+			</div>
+			<div
+				ref={highlightedTextRef}
+				className={`w-full whitespace-pre-line leading-5 border-2 border-purple-400 rounded text-xs p-2 ${GeistMono.className}`}
+			></div>
+		</div>
+	);
+};
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+	const resumeLinkFromStorage = localStorage.getItem("resumeLink");
+	const [resumeInput, setResumeInput] = useState<string>("");
+	const [resumeLink, setResumeLink] = useState<string>(
+		resumeLinkFromStorage || ""
+	);
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+	useEffect(() => {
+		if (resumeLinkFromStorage) {
+			setResumeLink(resumeLinkFromStorage);
+		}
+	}, []);
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+	useEffect(() => {
+		// Whenever ResumeLink Changes set the value in localStorage
+		if (resumeLink) {
+			localStorage.setItem("resumeLink", resumeLink);
+		}
+	}, [resumeLink]);
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+	const replaceResumeLinkInTemplate = (
+		templateText: string,
+		resumeLink: string
+	) => {
+		return templateText.replace("#.resumeLink", resumeLink);
+	};
+	return (
+		<main className="flex min-h-screen flex-col items-center justify-start p-7 text-gray-100">
+			<div
+				className={`${GeistSans.className} w-full flex justify-start items-center text-xl`}
+			>
+				Templates
+			</div>
+			<div className="p-5 border-gray-300 border-2 rounded flex w-full flex-col my-2">
+				<div className="flex w-full justify-start space-x-5 items-center text-gray-300">
+					<span className="flex justify-center items-center">
+						{resumeLink ? "Current Link" : "No Link Found"}
+					</span>
+					{/* <div className="flex justify-start items-center space-x-2 w-[80%]">
+				</div> */}
+					{resumeLink && (
+						<a
+							href={resumeLink}
+							className="px-3 py-2 rounded text-blue-300 truncate"
+						>
+							{resumeLink}
+						</a>
+					)}
+					{/* <button className="flex px-3 py-2 rounded bg-green-700">Save</button> */}
+				</div>
+				<div className="flex w-full space-x-5 justify-start items-center text-gray-300">
+					<span>Resume Link</span>
+					<input
+						onChange={(e) => {
+							setResumeInput(e.target.value);
+						}}
+						className="px-3 py-2 rounded text-black w-[70vw]"
+					/>
+					{/* <div className="flex justify-start items-center space-x-2">
+					</div> */}
+					<button
+						onClick={() => {
+							setResumeLink(resumeInput);
+						}}
+						className="flex px-3 py-2 rounded bg-green-700"
+					>
+						Save
+					</button>
+				</div>
+			</div>
+			<div className="mt-3 flex justify-start w-full">
+				<GenerateTemplate
+					templateText={replaceResumeLinkInTemplate(
+						templates[0].templateText,
+						resumeLink
+					)}
+					title={templates[0].title}
+					variables={templates[0].variables}
+				/>
+			</div>
+		</main>
+	);
 }
