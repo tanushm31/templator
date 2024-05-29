@@ -1,5 +1,5 @@
 "use client";
-
+import { Toaster } from "react-hot-toast";
 import Image from "next/image";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
@@ -263,6 +263,7 @@ export default function Home() {
 					/>
 				</div>
 			)}
+			<Toaster />
 		</main>
 	);
 }

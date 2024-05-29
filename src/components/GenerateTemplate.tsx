@@ -1,6 +1,7 @@
 import { ITemplate } from "@/app/page";
 import { GeistMono } from "geist/font";
 import { useState, useRef, useEffect } from "react";
+import toast from "react-hot-toast";
 
 export const GenerateTemplate: React.FC<ITemplate> = (props: ITemplate) => {
 	const { title, templateText, variables } = props;
@@ -96,9 +97,12 @@ export const GenerateTemplate: React.FC<ITemplate> = (props: ITemplate) => {
 					onClick={async () => {
 						if (highlightedTextRef.current) {
 							const txt = highlightedTextRef.current.innerText;
-							alert(txt);
+							// alert(txt);
 							try {
 								await navigator.clipboard.writeText(txt);
+								toast("Text copied to clipboard!", {
+									icon: "📋",
+								});
 								// alert("Text copied to clipboard!");
 							} catch (err) {
 								console.error("Failed to copy text: ", err);
