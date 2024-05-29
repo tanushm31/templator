@@ -5,6 +5,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { useEffect, useRef, useState } from "react";
 import GenerateTemplate from "@/components/GenerateTemplate";
+import ResumeSaveSection from "@/components/ResumeSaver";
 
 export type ITemplate = {
 	title: string;
@@ -38,6 +39,102 @@ export const templates: ITemplate[] = [
 		variables: ["userName", "jobLink", "companyName"],
 		// resumeAttachedFlag
 	},
+	{
+		title: "Std LinkedIN",
+		templateText: `
+    Hi $.userName,
+
+    It's great connecting with you. How have you been?
+    
+    I found a job opportunity at $.companyName which perfectly overlaps with my skillset and wanted to check if you could provide me with a refferal for the same.
+    
+    Here is the job link:
+    $.jobLink
+    
+    Here is a link to my resume: 
+    #.resumeLink
+
+    Looking forward to hearing back from you, thank you for your time and consideration.
+    
+
+    Best Regards,
+    Tanush
+    `,
+		variables: ["userName", "jobLink", "companyName"],
+		// resumeAttachedFlag
+	},
+	{
+		title: "Std LinkedIN",
+		templateText: `
+    Hi $.userName,
+
+    It's great connecting with you. How have you been?
+    
+    I found a job opportunity at $.companyName which perfectly overlaps with my skillset and wanted to check if you could provide me with a refferal for the same.
+    
+    Here is the job link:
+    $.jobLink
+    
+    Here is a link to my resume: 
+    #.resumeLink
+
+    Looking forward to hearing back from you, thank you for your time and consideration.
+    
+
+    Best Regards,
+    Tanush
+    `,
+		variables: ["userName", "jobLink", "companyName"],
+		// resumeAttachedFlag
+	},
+	{
+		title: "Std LinkedIN",
+		templateText: `
+    Hi $.userName,
+
+    It's great connecting with you. How have you been?
+    
+    I found a job opportunity at $.companyName which perfectly overlaps with my skillset and wanted to check if you could provide me with a refferal for the same.
+    
+    Here is the job link:
+    $.jobLink
+    
+    Here is a link to my resume: 
+    #.resumeLink
+
+    Looking forward to hearing back from you, thank you for your time and consideration.
+    
+
+    Best Regards,
+    Tanush
+    `,
+		variables: ["userName", "jobLink", "companyName"],
+		// resumeAttachedFlag
+	},
+	{
+		title: "Std LinkedIN",
+		templateText: `
+    Hi $.userName,
+
+    It's great connecting with you. How have you been?
+    
+    I found a job opportunity at $.companyName which perfectly overlaps with my skillset and wanted to check if you could provide me with a refferal for the same.
+    
+    Here is the job link:
+    $.jobLink
+    
+    Here is a link to my resume: 
+    #.resumeLink
+
+    Looking forward to hearing back from you, thank you for your time and consideration.
+    
+
+    Best Regards,
+    Tanush
+    `,
+		variables: ["userName", "jobLink", "companyName"],
+		// resumeAttachedFlag
+	},
 ];
 
 export type ITextPart = {
@@ -45,11 +142,81 @@ export type ITextPart = {
 	text: string;
 };
 
+const TemplateCard = (props: {
+	tID: number;
+	template: ITemplate;
+	selected: boolean;
+	onClickFn: (ip: number) => void;
+}) => {
+	const { template, selected } = props;
+	const { title, variables, templateText } = template;
+	return (
+		<div
+			onClick={() => {
+				props.onClickFn(props.tID);
+			}}
+			className={`hover:cursor-pointer flex-col flex justify-between h-44 bg-blue-800/20 rounded p-3 text-xs ${
+				selected ? "border-2 border-green-500" : ""
+			}`}
+		>
+			<div className="font-bold text-xl">{title}</div>
+			<div className="flex justify-start  flex-wrap">
+				{variables.map((variable) => (
+					<span
+						key={variable}
+						className="rounded mb-2 mr-2 px-2.5 py-1 bg-purple-800"
+					>
+						{variable}
+					</span>
+				))}
+			</div>
+			{/* <div className="text-ellipsis text-gray-400 flex w-full h-10 overflow-clip text-wrap">
+				{templateText}
+			</div> */}
+		</div>
+	);
+};
+const TemplateList = (props: {
+	templates: ITemplate[];
+	selectedTemplateId: number | undefined;
+	setSelectedTemplateID: (ip: number) => void;
+}) => {
+	return (
+		<div className="flex flex-col w-full ">
+			<div
+				className={`${GeistSans.className} w-full flex justify-start items-center text-xl`}
+			>
+				Templates
+			</div>
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  gap-5">
+				{props.templates.map((template, id) => {
+					return (
+						<TemplateCard
+							tID={id}
+							onClickFn={props.setSelectedTemplateID}
+							key={id}
+							template={template}
+							selected={props.selectedTemplateId === id}
+							// templateText={template.templateText}
+							// title={template.title}
+							// variables={template.variables}
+						/>
+					);
+				})}
+			</div>
+		</div>
+	);
+};
+
 export default function Home() {
 	const resumeLinkFromStorage = localStorage.getItem("resumeLink");
 	const [resumeInput, setResumeInput] = useState<string>("");
 	const [resumeLink, setResumeLink] = useState<string>(
 		resumeLinkFromStorage || ""
+	);
+
+	const [currentSelected, setCurrentSelected] = useState<number | undefined>(
+		undefined
 	);
 
 	useEffect(() => {
@@ -73,58 +240,29 @@ export default function Home() {
 	};
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-start p-7 text-gray-100">
-			<div
-				className={`${GeistSans.className} w-full flex justify-start items-center text-xl`}
-			>
-				Templates
-			</div>
-			<div className="p-5 border-gray-300 border-2 rounded flex w-full flex-col my-2">
-				<div className="flex w-full justify-start space-x-5 items-center text-gray-300">
-					<span className="flex justify-center items-center">
-						{resumeLink ? "Current Link" : "No Link Found"}
-					</span>
-					{/* <div className="flex justify-start items-center space-x-2 w-[80%]">
-				</div> */}
-					{resumeLink && (
-						<a
-							href={resumeLink}
-							className="px-3 py-2 rounded text-blue-300 truncate"
-						>
-							{resumeLink}
-						</a>
-					)}
-					{/* <button className="flex px-3 py-2 rounded bg-green-700">Save</button> */}
-				</div>
-				<div className="flex w-full space-x-5 justify-start items-center text-gray-300">
-					<span>Resume Link</span>
-					<input
-						onChange={(e) => {
-							setResumeInput(e.target.value);
-						}}
-						className="px-3 py-2 rounded text-black w-[70vw]"
+			<ResumeSaveSection
+				resumeLink={resumeLink}
+				setResumeLink={setResumeLink}
+				resumeInput={resumeInput}
+				setResumeInput={setResumeInput}
+			/>
+			<TemplateList
+				templates={templates}
+				selectedTemplateId={currentSelected}
+				setSelectedTemplateID={setCurrentSelected}
+			/>
+			{currentSelected !== undefined && (
+				<div className="mt-3 flex justify-start w-full">
+					<GenerateTemplate
+						templateText={replaceResumeLinkInTemplate(
+							templates[currentSelected].templateText,
+							resumeLink
+						)}
+						title={templates[currentSelected].title}
+						variables={templates[currentSelected].variables}
 					/>
-					{/* <div className="flex justify-start items-center space-x-2">
-					</div> */}
-					<button
-						onClick={() => {
-							setResumeLink(resumeInput);
-						}}
-						className="flex px-3 py-2 rounded bg-green-700"
-					>
-						Save
-					</button>
 				</div>
-			</div>
-			<div className="mt-3 flex justify-start w-full">
-				<GenerateTemplate
-					templateText={replaceResumeLinkInTemplate(
-						templates[0].templateText,
-						resumeLink
-					)}
-					title={templates[0].title}
-					variables={templates[0].variables}
-				/>
-			</div>
+			)}
 		</main>
 	);
 }
