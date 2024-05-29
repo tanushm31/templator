@@ -93,7 +93,18 @@ export const GenerateTemplate: React.FC<ITemplate> = (props: ITemplate) => {
 					className={`flex justify-between items-center text-xs p-2 rounded ${
 						!checkIfAllVariablesAreFilled() ? "bg-red-600" : "bg-green-700"
 					}`}
-					onClick={() => {}}
+					onClick={async () => {
+						if (highlightedTextRef.current) {
+							const txt = highlightedTextRef.current.innerText;
+							alert(txt);
+							try {
+								await navigator.clipboard.writeText(txt);
+								// alert("Text copied to clipboard!");
+							} catch (err) {
+								console.error("Failed to copy text: ", err);
+							}
+						}
+					}}
 				>
 					Copy{" "}
 					<svg
