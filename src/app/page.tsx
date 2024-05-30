@@ -71,7 +71,7 @@ export default function Home() {
       Tanush Mahajan
       `,
 			title: "Linked IN Recruiters",
-			variables: ["userName", "companyName", "jobLink"],
+			variables: ["userName", "companyName"],
 		},
 	];
 	// const resumeLinkFromStorage = "";
