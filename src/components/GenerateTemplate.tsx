@@ -29,14 +29,14 @@ export const GenerateTemplate: React.FC<ITemplate> = (props: ITemplate) => {
 		console.log("Variable Values in Highlight Function", variableDict);
 		variables.forEach((currWord) => {
 			if (variableDict.has(currWord) && variableDict.get(currWord) !== "") {
-				finalText = finalText.replace(
+				finalText = finalText.replaceAll(
 					`$.${currWord}`,
 					`<em style="background-color:#064e3b !important;">${variableDict.get(
 						currWord
 					)}</em>`
 				);
 			} else {
-				finalText = finalText.replace(
+				finalText = finalText.replaceAll(
 					`$.${currWord}`,
 					`<em style="color:#dc2626 !important;">{${currWord}}</em>`
 				);
