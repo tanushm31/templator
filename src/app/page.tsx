@@ -138,6 +138,20 @@ export default function Home() {
 		}
 	}, [profile]);
 
+	const pageLoaded = useState(false);
+
+	const [showHideProfileEditor, setShowHideProfileEditor] = useState(false);
+
+	// useEffect(() => {
+	// 	setInterval(() => {
+	// 		if (someValuePresent(profile)) {
+	// 			setShowHideProfileEditor(false);
+	// 		} else {
+	// 			setShowHideProfileEditor(true);
+	// 		}
+	// 	}, 1000);
+	// }, [profile]);
+
 	useEffect(() => {
 		// Whenever ResumeLink Changes set the value in localStorage
 		if (resumeLink) {
@@ -161,6 +175,7 @@ export default function Home() {
 			<div className="flex items-center justify-between w-full text-3xl">
 				Templator
 				<button
+					onClick={() => setShowHideProfileEditor(!showHideProfileEditor)}
 					className={`px-3 py-2 rounded text-sm ${
 						allValuesPresent(profile)
 							? "bg-green-500"
@@ -172,6 +187,7 @@ export default function Home() {
 					Edit Profile
 				</button>
 			</div>
+			{showHideProfileEditor && (
 			<ProfileSignUp
 				name={profile.name}
 				email={profile.email}
@@ -179,7 +195,8 @@ export default function Home() {
 				resumeLink={profile.resumeLink}
 				saveProfile={setProfile}
 			/>
-			<div className="flex flex-col">
+			)}
+			{/* <div className="flex flex-col">
 				<div>profile data</div>
 				<div className="">Name: {profile.name ? profile.name : "Empty"}</div>
 				<div className="">Email: {profile.email ? profile.email : "Empty"}</div>
