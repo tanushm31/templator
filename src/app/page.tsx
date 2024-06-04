@@ -44,7 +44,7 @@ export default function Home() {
       
   
       Best Regards,
-      Tanush
+      #.profileName
       `,
 			variables: ["userName", "jobLink", "companyName"],
 			// resumeAttachedFlag
@@ -65,13 +65,13 @@ export default function Home() {
 
       - I'm accustomed to working in fast paced environments with high developer velocity.
 
-      Thank you for considering my application. I am looking forward to the possibility of joining $.companyName's journey. I am available for an interview at your earliest convenience and can be reached at +91-7988187982 or via email at taush.mohina@gmail.com.
+      Thank you for considering my application. I am looking forward to the possibility of joining $.companyName's journey. I am available for an interview at your earliest convenience and can be reached at #.profilePhone or via email at #.profileEmail.
 
       Here is a link to my resume:
       #.resumeLink
 
       Best Regards 
-      Tanush Mahajan
+      #.profileName
       `,
 			title: "Linked IN Recruiters",
 			variables: ["userName", "companyName"],
@@ -145,12 +145,17 @@ export default function Home() {
 		}
 	}, [resumeLink]);
 
-	const replaceResumeLinkInTemplate = (
+	const replaceProfileDataInTemplate = (
 		templateText: string,
-		resumeLink: string
+		profileData: IProfileFormData
 	) => {
-		return templateText.replace("#.resumeLink", resumeLink);
+		return templateText
+			.replace("#.profileName", profileData.name)
+			.replace("#.profileEmail", profileData.email)
+			.replace("#.profilePhone", profileData.phone)
+			.replace("#.resumeLink", profileData.resumeLink);
 	};
+
 	return (
 		<main className="flex flex-col items-center justify-start min-h-screen text-gray-100 p-7">
 			<div className="flex items-center justify-between w-full text-3xl">
@@ -197,9 +202,9 @@ export default function Home() {
 			{currentSelected !== undefined && (
 				<div className="flex justify-start w-full mt-3">
 					<GenerateTemplate
-						templateText={replaceResumeLinkInTemplate(
+						templateText={replaceProfileDataInTemplate(
 							templates[currentSelected].templateText,
-							resumeLink
+							profile
 						)}
 						title={templates[currentSelected].title}
 						variables={templates[currentSelected].variables}
