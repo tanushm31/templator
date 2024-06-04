@@ -5,7 +5,10 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { useEffect, useRef, useState } from "react";
 import GenerateTemplate from "@/components/GenerateTemplate";
-import ResumeSaveSection from "@/components/ResumeSaver";
+import ResumeSaveSection, {
+	IProfileFormData,
+	ProfileSignUp,
+} from "@/components/ResumeSaver";
 import { TemplateList } from "@/components/Template";
 
 export type ITemplate = {
@@ -82,6 +85,41 @@ export default function Home() {
 		undefined
 	);
 
+	const [profile, setProfile] = useState<IProfileFormData>({
+		name: "",
+		email: "",
+		phone: "",
+		resumeLink: "",
+	});
+
+	const someValuePresent = (profile: IProfileFormData) => {
+		return (
+			profile.name !== "" ||
+			profile.email !== "" ||
+			profile.phone !== "" ||
+			profile.resumeLink !== ""
+		);
+	};
+
+	const allValuesPresent = (profile: IProfileFormData) => {
+		return (
+			profile.name !== "" &&
+			profile.email !== "" &&
+			profile.phone !== "" &&
+			profile.resumeLink !== ""
+		);
+	};
+
+	// use effect to load profileData From Local Storage
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+		// Whenever the component mounts, get the resumeLink from localStorage
+		const profileDataFromStorage = localStorage.getItem("profileData");
+		if (profileDataFromStorage) {
+			setProfile(JSON.parse(profileDataFromStorage));
+		}
+	}, []);
+
 	useEffect(() => {
 		if (typeof window === "undefined") return;
 		// Whenever the component mounts, get the resumeLink from localStorage
@@ -90,6 +128,15 @@ export default function Home() {
 			setResumeLink(resumeLinkFromStorage);
 		}
 	}, []);
+
+	// use effect to save profileData to Local Storage
+	useEffect(() => {
+		// Whenever Profile Changes set the value in localStorage
+		if (profile && someValuePresent(profile)) {
+			console.log("Updating Profile Data in Local Storage");
+			localStorage.setItem("profileData", JSON.stringify(profile));
+		}
+	}, [profile]);
 
 	useEffect(() => {
 		// Whenever ResumeLink Changes set the value in localStorage
@@ -105,7 +152,37 @@ export default function Home() {
 		return templateText.replace("#.resumeLink", resumeLink);
 	};
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-start p-7 text-gray-100">
+		<main className="flex flex-col items-center justify-start min-h-screen text-gray-100 p-7">
+			<div className="flex items-center justify-between w-full text-3xl">
+				Templator
+				<button
+					className={`px-3 py-2 rounded text-sm ${
+						allValuesPresent(profile)
+							? "bg-green-500"
+							: someValuePresent(profile)
+							? "bg-yellow-500"
+							: "bg-red-500"
+					}`}
+				>
+					Edit Profile
+				</button>
+			</div>
+			<ProfileSignUp
+				name={profile.name}
+				email={profile.email}
+				phone={profile.phone}
+				resumeLink={profile.resumeLink}
+				saveProfile={setProfile}
+			/>
+			<div className="flex flex-col">
+				<div>profile data</div>
+				<div className="">Name: {profile.name ? profile.name : "Empty"}</div>
+				<div className="">Email: {profile.email ? profile.email : "Empty"}</div>
+				<div className="">Phone: {profile.phone ? profile.phone : "Empty"}</div>
+				<div className="">
+					Resume Link: {profile.resumeLink ? profile.resumeLink : "Empty"}
+				</div>
+			</div>
 			<ResumeSaveSection
 				resumeLink={resumeLink}
 				setResumeLink={setResumeLink}
@@ -118,7 +195,7 @@ export default function Home() {
 				setSelectedTemplateID={setCurrentSelected}
 			/>
 			{currentSelected !== undefined && (
-				<div className="mt-3 flex justify-start w-full">
+				<div className="flex justify-start w-full mt-3">
 					<GenerateTemplate
 						templateText={replaceResumeLinkInTemplate(
 							templates[currentSelected].templateText,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 type IResumeSaveSectionProps = {
@@ -29,6 +29,12 @@ export const ProfileSignUp = (props: IProfileSignUpProps) => {
 	const [phone, setPhone] = useState(props.phone);
 	const [resumeLink, setResumeLink] = useState(props.resumeLink);
 
+	useEffect(() => {
+		setName(props.name);
+		setEmail(props.email);
+		setPhone(props.phone);
+		setResumeLink(props.resumeLink);
+	}, [props.name, props.email, props.phone, props.resumeLink]);
 	return (
 		<div className="flex flex-col w-full p-5 my-2 border-2 border-gray-300 rounded">
 			{/* Form To Enter or Update Profile Section */}
@@ -42,7 +48,7 @@ export const ProfileSignUp = (props: IProfileSignUpProps) => {
 							defaultValue={props.name}
 							onChange={(e) => setName(e.target.value)}
 							placeholder="Name"
-							className="col-span-2 px-3 py-2 text-black rounded"
+							className="col-span-2 px-3 py-2 text-xs text-black rounded"
 						/>
 					</div>
 					<div className="grid items-center justify-start grid-cols-3 p-2 mt-1 space-x-2 bg-gray-700 rounded ">
@@ -52,7 +58,7 @@ export const ProfileSignUp = (props: IProfileSignUpProps) => {
 							defaultValue={props.email}
 							onChange={(e) => setEmail(e.target.value)}
 							placeholder="Email"
-							className="col-span-2 px-3 py-2 text-black rounded"
+							className="col-span-2 px-3 py-2 text-xs text-black rounded"
 						/>
 					</div>
 					<div className="grid items-center justify-start grid-cols-3 p-2 mt-1 space-x-2 bg-gray-700 rounded ">
@@ -62,7 +68,7 @@ export const ProfileSignUp = (props: IProfileSignUpProps) => {
 							defaultValue={props.phone}
 							onChange={(e) => setPhone(e.target.value)}
 							placeholder="Phone"
-							className="col-span-2 px-3 py-2 text-black rounded"
+							className="col-span-2 px-3 py-2 text-xs text-black rounded"
 						/>
 					</div>
 					<div className="grid items-center justify-start grid-cols-3 p-2 mt-1 space-x-2 bg-gray-700 rounded ">
@@ -72,12 +78,19 @@ export const ProfileSignUp = (props: IProfileSignUpProps) => {
 							defaultValue={props.resumeLink}
 							onChange={(e) => setResumeLink(e.target.value)}
 							placeholder="Resume Link"
-							className="col-span-2 px-3 py-2 text-black rounded"
+							className="col-span-2 px-3 py-2 text-xs text-black rounded"
 						/>
 					</div>
 				</form>
 				<button
 					onClick={() => {
+						console.log("Data To Save: ");
+						console.log({
+							name: name,
+							email: email,
+							phone: phone,
+							resumeLink: resumeLink,
+						});
 						props.saveProfile({
 							name,
 							email,
