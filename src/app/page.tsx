@@ -188,13 +188,13 @@ export default function Home() {
 				</button>
 			</div>
 			{showHideProfileEditor && (
-			<ProfileSignUp
-				name={profile.name}
-				email={profile.email}
-				phone={profile.phone}
-				resumeLink={profile.resumeLink}
-				saveProfile={setProfile}
-			/>
+				<ProfileSignUp
+					name={profile.name}
+					email={profile.email}
+					phone={profile.phone}
+					resumeLink={profile.resumeLink}
+					saveProfile={setProfile}
+				/>
 			)}
 			{/* <div className="flex flex-col">
 				<div>profile data</div>
@@ -210,14 +210,14 @@ export default function Home() {
 				setResumeLink={setResumeLink}
 				resumeInput={resumeInput}
 				setResumeInput={setResumeInput}
-			/>
+			/> */}
 			<TemplateList
 				templates={templates}
 				selectedTemplateId={currentSelected}
 				setSelectedTemplateID={setCurrentSelected}
 			/>
 			{currentSelected !== undefined && (
-				<div className="flex justify-start w-full mt-3">
+				<div className="flex justify-start w-full mt-5">
 					<GenerateTemplate
 						templateText={replaceProfileDataInTemplate(
 							templates[currentSelected].templateText,
