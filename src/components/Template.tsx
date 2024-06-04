@@ -19,8 +19,8 @@ export const TemplateCard = (props: {
 				selected ? "border-2 border-green-500" : ""
 			}`}
 		>
-			<div className="font-bold text-xl">{title}</div>
-			<div className="flex justify-start  flex-wrap">
+			<div className="text-xl font-bold">{title}</div>
+			<div className="flex flex-wrap justify-start">
 				{variables.map((variable) => (
 					<span
 						key={variable}
@@ -30,7 +30,7 @@ export const TemplateCard = (props: {
 					</span>
 				))}
 			</div>
-			{/* <div className="text-ellipsis text-gray-400 flex w-full h-10 overflow-clip text-wrap">
+			{/* <div className="flex w-full h-10 text-gray-400 text-ellipsis overflow-clip text-wrap">
 				{templateText}
 			</div> */}
 		</div>
@@ -42,13 +42,13 @@ export const TemplateList = (props: {
 	setSelectedTemplateID: (ip: number) => void;
 }) => {
 	return (
-		<div className="flex flex-col w-full ">
+		<div className="flex flex-col w-full mt-3">
 			<div
 				className={`${GeistSans.className} w-full flex justify-start items-center text-xl`}
 			>
 				Templates
 			</div>
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  gap-5">
+			<div className="grid grid-cols-1 gap-5 mt-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 				{props.templates.map((template, id) => {
 					return (
 						<TemplateCard

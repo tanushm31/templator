@@ -67,15 +67,15 @@ export const GenerateTemplate: React.FC<ITemplate> = (props: ITemplate) => {
 		}
 	}, [variableDict]);
 	return (
-		<div className="flex w-full flex-col justify-start bg-gray-900 rounded p-2">
+		<div className="flex flex-col justify-start w-full p-2 bg-gray-900 rounded">
 			<div className="w-full">Variables</div>
-			<div className="w-full grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 text-xs bg-indigo-950/60 rounded p-2">
+			<div className="grid w-full grid-cols-1 gap-2 p-2 mt-3 text-xs rounded md:grid-cols-2 lg:grid-cols-3 bg-indigo-950/60">
 				{variables.map((variable) => {
 					return (
-						<div className="mt-1 flex flex-col" key={variable}>
+						<div className="flex flex-col mt-1" key={variable}>
 							<div>{variable}</div>
 							<input
-								className="text-black px-3 py-2 mt-1 rounded"
+								className="px-3 py-2 mt-1 text-black rounded"
 								onChange={(e) => {
 									setVariableDict((prevDict) => {
 										const newDict = new Map(prevDict);
@@ -89,7 +89,7 @@ export const GenerateTemplate: React.FC<ITemplate> = (props: ITemplate) => {
 					);
 				})}
 			</div>
-			<div className="mt-3 flex justify-between items-center text-white py-2">
+			<div className="flex items-center justify-between py-2 mt-3 text-white">
 				<span>Generated Text</span>{" "}
 				<button
 					className={`flex justify-between items-center text-xs p-2 rounded ${
