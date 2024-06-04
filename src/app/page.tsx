@@ -164,10 +164,10 @@ export default function Home() {
 		profileData: IProfileFormData
 	) => {
 		return templateText
-			.replace("#.profileName", profileData.name)
-			.replace("#.profileEmail", profileData.email)
-			.replace("#.profilePhone", profileData.phone)
-			.replace("#.resumeLink", profileData.resumeLink);
+			.replaceAll("#.profileName", profileData.name)
+			.replaceAll("#.profileEmail", profileData.email)
+			.replaceAll("#.profilePhone", profileData.phone)
+			.replaceAll("#.resumeLink", profileData.resumeLink);
 	};
 
 	return (
